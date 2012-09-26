@@ -112,15 +112,15 @@ module Cloudinary::CarrierWave
 
       if @identifier.include?("/")
         version, @filename = @identifier.split("/")
-        @version = version[1..-1] # remove 'v' prefix
+        @version = version.gsub(/^v{1}/, '') # remove 'v' prefix
       else
         @filename = @identifier
         @version = nil 
       end
 
       @storage_type = uploader.class.storage_type
-      @resource_type = Cloudinary::Utils.resource_type_for_format(@filename)      
-      @public_id, @format = Cloudinary::CarrierWave.split_format(@filename)      
+      @public_id, @format = Cloudinary::CarrierWave.split_format(@filename)
+      @resource_type = Cloudinary::Utils.resource_type_for_format(@format.blank? ? 'jpg' : @format)
     end
     
     def delete

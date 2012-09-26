@@ -53,6 +53,10 @@ class Cloudinary::Uploader
   end
 
   def self.exists?(public_id, options={})
+    if options[:format].blank? && File.extname(public_id).blank? 
+      options[:format] = 'jpg'
+    end
+
     cloudinary_url = Cloudinary::Utils.cloudinary_url(public_id, options)
     begin
       RestClient::Request.execute(:method => :head, :url => cloudinary_url, :timeout=>5).code.to_s =~ /2\d{2}/

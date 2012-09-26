@@ -245,7 +245,7 @@ class Cloudinary::Utils
   
   def self.supported_image_format?(format)
     extension = format =~ /\./ ? format.split('.').last : format
-    IMAGE_FORMATS.include?(extension)
+    IMAGE_FORMATS.include?(extension.downcase)
   end
   
   def self.resource_type_for_format(format)
