@@ -128,7 +128,7 @@ module Cloudinary::CarrierWave
     end
     
     def exists?
-      Cloudinary::Uploader.exists?(self.identifier, :type=>self.storage_type, :resource_type=>self.resource_type)
+      Cloudinary::Uploader.exists?(self.public_id, :type=>self.storage_type, :resource_type=>self.resource_type, :version=>self.version)
     end
     
     def read(options={})
