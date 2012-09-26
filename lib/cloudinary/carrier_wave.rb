@@ -119,8 +119,8 @@ module Cloudinary::CarrierWave
       end
 
       @storage_type = uploader.class.storage_type
+      @public_id, @format = Cloudinary::CarrierWave.split_format(@filename)
       @resource_type = Cloudinary::Utils.resource_type_for_format(@filename)      
-      @public_id, @format = Cloudinary::CarrierWave.split_format(@filename)      
     end
     
     def delete
