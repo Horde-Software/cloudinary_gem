@@ -112,7 +112,7 @@ module Cloudinary::CarrierWave
 
       if @identifier.include?("/")
         version, @filename = @identifier.split("/")
-        @version = version[1..-1] # remove 'v' prefix
+        @version = version.gsub(/^v{1}/, '') # remove 'v' prefix
       else
         @filename = @identifier
         @version = nil 
