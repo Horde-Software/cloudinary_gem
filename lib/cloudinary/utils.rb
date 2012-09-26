@@ -241,7 +241,7 @@ class Cloudinary::Utils
     end
   end
   
-  IMAGE_FORMATS = %w(bmp png jpg jpeg gif ico) 
+  IMAGE_FORMATS = %w(bmp png tif tiff jpg jpeg gif pdf ico) 
   
   def self.supported_image_format?(format)
     extension = format =~ /\./ ? format.split('.').last : format
