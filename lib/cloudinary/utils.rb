@@ -48,9 +48,14 @@ class Cloudinary::Utils
     effect = options.delete(:effect)
     effect = Array(effect).flatten.join(":") if effect.is_a?(Array) || effect.is_a?(Hash)
     
-    params = {:w=>width, :h=>height, :t=>named_transformation, :c=>crop, :b=>background, :e=>effect, :a=>angle}
+    border = options.delete(:border)
+    if border.is_a?(Hash)
+      border = "#{border[:width] || 2}px_solid_#{(border[:color] || "black").sub(/^#/, 'rgb:')}"
+    end
+    
+    params = {:w=>width, :h=>height, :t=>named_transformation, :c=>crop, :b=>background, :e=>effect, :a=>angle, :bo=>border}
     { :x=>:x, :y=>:y, :r=>:radius, :d=>:default_image, :g=>:gravity, :q=>:quality, :cs=>:color_space,
-      :p=>:prefix, :l=>:overlay, :u=>:underlay, :f=>:fetch_format, :dn=>:density, :pg=>:page 
+      :p=>:prefix, :l=>:overlay, :u=>:underlay, :f=>:fetch_format, :dn=>:density, :pg=>:page, :dl=>:delay
     }.each do
       |param, option|
       params[param] = options.delete(option)
@@ -178,7 +183,7 @@ class Cloudinary::Utils
     authenticated_distribution = options[:authenticated_distribution] || Cloudinary.config.authenticated_distribution || raise("Must supply authenticated_distribution")
     @signers ||= Hash.new{|h,k| path, id = k; h[k] = AwsCfSigner.new(path, id)}
     signer = @signers[[aws_private_key_path, aws_key_pair_id]]
-    url = Cloudinary::Utils.unsigned_download_url(public_id, options.merge(:secure=>true, :secure_distribution=>authenticated_distribution, :private_cdn=>true, :type=>:authenticated))
+    url = Cloudinary::Utils.unsigned_download_url(public_id, {:type=>:authenticated}.merge(options).merge(:secure=>true, :secure_distribution=>authenticated_distribution, :private_cdn=>true))
     expires_at = options[:expires_at] || (Time.now+3600)
     signer.sign(url, :ending => expires_at)
   end
@@ -244,6 +249,7 @@ class Cloudinary::Utils
   IMAGE_FORMATS = %w(bmp png tif tiff jpg jpeg gif pdf ico) 
   
   def self.supported_image_format?(format)
+    format = format.to_s.downcase
     extension = format =~ /\./ ? format.split('.').last : format
     IMAGE_FORMATS.include?(extension.downcase)
   end
