@@ -132,7 +132,7 @@ module Cloudinary::CarrierWave
     end
     
     def read(options={})
-      parameters={:type=>self.storage_type, :resource_type=>self.resource_type, :version=>self.version}.merge(options)
+      parameters={:type=>self.storage_type, :resource_type=>self.resource_type, :version=>self.version, :format=>self.format}.merge(options)
       Cloudinary::Downloader.download(self.public_id, parameters)
     end
 
